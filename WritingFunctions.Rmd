@@ -1,0 +1,135 @@
+---
+title: "Writing Functions"
+subtitle: "Module 1: Reproducible Research Example"
+author: "Dr Alyce Russell <br> Postdoctoral Research Fellow <br> Centre for Precision Health, ECU <br> a.russell@ecu.edu.au <br> https://www.twitter.com/nerdrusty "
+date: "Created: 3 March 2021 <br> Last Updated: `r format(Sys.Date(), format = '%d %B %Y')`"
+output: 
+  html_document:
+    css: buttons.css
+    fig_caption: yes
+    highlight: tango
+    keep_md: yes
+    theme: lumen
+    toc: yes
+    toc_float:
+      collapsed: false
+    toc_depth: 2
+    self_contained: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+```{r, echo=FALSE}
+#Determine the output format of the document
+outputFormat = knitr::opts_knit$get("rmarkdown.pandoc.to")
+
+#Figure and Table Caption Numbering, for HTML do it manually
+capTabNo = 1; capFigNo = 1;
+
+#Function to add the Table Number
+capTab = function(x){
+  if(outputFormat == 'html'){
+    x = paste0("**", "Table ", capTabNo, ". ", "**", x)
+    capTabNo <<- capTabNo + 1
+  }; x
+}
+
+#Function to add the Figure Number
+capFig = function(x){
+  if(outputFormat == 'html'){
+    x = paste0("**", "Figure ",capFigNo,". ", "**", x)
+    capFigNo <<- capFigNo + 1
+  }; x
+}
+
+```
+
+<div style="margin-bottom:50px;">
+
+<style>
+ #TOC {
+  background: url("./images/Centre-for-Precision-Health.png");
+  background-size: contain;
+  padding-top: 100px !important;
+  background-repeat: no-repeat;
+}
+</style>
+
+</div>
+
+<style>
+  p.caption {
+    font-size: 1.2em;
+    }
+  caption {
+    font-size: 1.2em;
+    } 
+  body{
+    font-size: 12pt;
+    }
+</style>
+
+
+<script src="hideOutput.js"></script>   
+
+
+## Overview
+
+<br>
+
+This is a walk-through on writing functions in R. We will use publicly available data to complete this task (downloaded from [here](http://faculty.washington.edu/kenrice/bigr/index.shtml) but also available with these module 1 notes. 
+
+<br>
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(ggpubr)
+```
+
+## Data Preparation
+
+<br>
+
+The data are some SNPs and basic phenotypes for 1000 individuals. 
+
+```{r}
+snps <- read.csv("./data/example-snp.csv", header = TRUE)
+pheno <- read.csv("./data/example-pheno.csv", header = TRUE)
+```
+
+<br>
+
+Let's explore the data a little bit. 
+
+<br>
+
+```{r}
+str(snps)
+
+str(pheno)
+```
+
+<br>
+
+## Prepare Data
+
+<br>
+
+Let's write a function to determine the minor allele, minor allele frequency in this population, and convert data to numeric coding (0,1,2) with 2 indicating the minor allele.  
+
+<br>
+
+```{r}
+source("./rscripts/cleansnps.R")
+
+snps_coded <- cleansnps(snps, id_var="id")
+snpsbim <- cleansnps(snps, id_var="id", output="snpsbim")
+```
+
+
